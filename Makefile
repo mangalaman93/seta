@@ -54,3 +54,13 @@ distclean: clean
 	rm -rf $(LDIR)
 
 .PHONY: clean
+
+doc: doc/html
+.PHONY: doc
+
+doc/html:
+	cd doc && doxygen
+
+docclean:
+	rm -r doc/html
+.PHONY: docclean
