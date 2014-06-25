@@ -14,6 +14,7 @@ xcuserdata/
 *.o
 *.pyc
 *.hi
+bin/*
 
 #Python modules
 MANIFEST
@@ -26,3 +27,6 @@ build/
 .#*
 *.swp
 *.un~
+
+# lib files
+lib/*
