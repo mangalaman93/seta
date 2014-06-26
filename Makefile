@@ -8,6 +8,7 @@ CC = gcc
 DEBUG = -g
 PROFILE =
 CFLAGS = -Wall -std=c99 -w $(DEBUG) -I$(IDIR) $(PROFILE)
+VALGRIND = valgrind --leak-check=full
 
 SDIR = src
 ODIR = bin
@@ -40,6 +41,9 @@ $(ODIR)/$(OUTPUT): $(OBJ)
 
 test: test_setup dir $(TOBJ)
 	$(foreach test_file, $(wildcard $(ODIR)/*_test.o), ./$(test_file))
+
+testvalgrind: test_setup dir $(TOBJ)
+	$(foreach test_file, $(wildcard $(ODIR)/*_test.o), $(VALGRIND) ./$(test_file))
 
 test_setup: all
 ifeq "$(wildcard $(LDIR) )" ""
