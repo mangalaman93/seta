@@ -3,12 +3,12 @@
  *  stealing-work scheduler
  *
  *  Created by Fabio Pricoco on 08/10/2013.
+ *  Updated by Aman Mangal on 26/6/2013
  *  Copyright 2013 Erlang Solutions Ltd. All rights reserved.
  *
  */
 
-#include "seta_internal.h"
-#include "stdio.h"
+#include "logger.h"
 
 logger_t logger_create(char *filename) {
 	logger_t logger;

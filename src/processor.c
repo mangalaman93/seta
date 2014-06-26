@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Erlang Solution Ltd. All rights reserved.
 //
 
-#include "seta_internal.h"
+#include "processor.h"
 
 processor_t * processor_create(int id) {
 	processor_t *proc = (processor_t *)malloc(sizeof(processor_t));
@@ -78,5 +78,5 @@ void processor_computate_space(processor_t *p) {
 	p->cur_space = cs;
 	if (cs > p->total_space) {
 		p->total_space = cs;
-	} 
+	}
 }

@@ -1,9 +1,9 @@
 # makefile (use -pg for profiling)
 
-MAINFILE = examples/basic.c
-OUTPUT = basic
+MAINFILE = examples/fibonacci_info.c
+OUTPUT = fibonacci_info
 
-IDIR = src
+IDIR = include
 CC = gcc
 DEBUG = -g
 PROFILE =
@@ -16,10 +16,10 @@ LDIR = lib
 TDIR = test
 LIBS = -lm -lpthread -lrt
 
-_DEPS = dequeue.h seta.h seta_internal.h
+_DEPS = closure.h dequeue.h graph_dot.h lists.h logger.h msg.h processor.h ready_queue.h scheduler.h seta.h seta_internal.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = closure.o lists.o processor.o dequeue.o logger.o ready_queue.o graph_dot.o msg.o scheduler.o
+_OBJ = logger.o dequeue.o msg.o lists.o closure.o graph_dot.o ready_queue.o processor.o seta.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 _TOBJ = dequeue_test.o
@@ -48,23 +48,21 @@ testvalgrind: test_setup dir $(TOBJ)
 test_setup: all
 ifeq "$(wildcard $(LDIR) )" ""
 	mkdir -p $(LDIR)
-	git clone https://github.com/siu/minunit.git $(LDIR)/minunit;
+	git clone https://github.com/siu/minunit.git $(LDIR)/minunit
 endif
+
+distclean: clean docclean
+	rm -rf $(LDIR)
+
+docclean:
+	rm -r doc/html
 
 clean:
 	rm -rf $(ODIR) *~
 
-distclean: clean
-	rm -rf $(LDIR)
-
-.PHONY: clean
-
 doc: doc/html
-.PHONY: doc
 
 doc/html:
 	cd doc && doxygen
 
-docclean:
-	rm -r doc/html
-.PHONY: docclean
+.PHONY: clean doc docclean

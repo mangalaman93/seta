@@ -7,10 +7,9 @@
  *
  */
 
-#include "seta_internal.h"
+#include "graph_dot.h"
 
 logger_t logger;
-
 char *color[] = {"green", "red", "blue", "orange", "gray"};
 
 void graph_start(char *filename) {
@@ -41,7 +40,7 @@ void graph_spawns(int spawning, spawn_list_t *spawn_list) {
 	}
 	logger_write(logger, msg);
 	msg_destroy(msg);
-	
+
 }
 
 void graph_send_argument(closure_t *closure, seta_context_t *context) {

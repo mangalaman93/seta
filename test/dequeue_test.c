@@ -13,7 +13,9 @@ void test_teardown() {
 
 MU_TEST(test_basic) {
 	mu_assert(!dequeue_is_not_empty(dq), "list should be empty!");
+
 	mu_assert_int_eq(0, dequeue_add_head(dq, 1));
+	mu_assert(!dequeue_is_not_empty(dq), "list should be empty!");
 	mu_assert_int_eq(1, dequeue_size(*dq));
 	mu_assert_int_eq(1, dequeue_get_element(*dq, 0));
 	mu_assert(!dequeue_get_element(*dq, 1), "should return NULL");

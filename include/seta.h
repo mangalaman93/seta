@@ -7,6 +7,7 @@
 //
 
 #include <stdbool.h>
+#include "processor.h"
 
 //! Handle for spawn next.
 /*! Handle used for declaring a new spawn next, setting up all the related continuations
@@ -23,34 +24,12 @@ typedef struct {
 	int n_arg;
 } seta_cont_t;
 
-
-//! Context needed by seta for the data exchange between the scheduler and threads.
-typedef struct {
-	int level;
-	int n_local_proc;
-	bool is_last_thread;
-	bool spawn_next_done;
-	bool free_args_done;
-	// info
-	char *spawned;
-	int args_size;
-	void *arg_name_list;
-	int allocated_ancients;
-	int closure_id;
-	void *allocated_ancient_list;
-	void *spawn_list;
-	void *args;
-} seta_context_t;
-
 //! List of argument name
 typedef void *seta_arg_name_list_t;
 
-
-
-
 /*! \fn seta_cont_t seta_create_cont(void *arg, seta_handle_spawn_next_t hsn)
- \brief Create a new continuation to the specified argument. According to the theory, 
- this continuation is linked to the closure of the thread that is going to be spawned and 
+ \brief Create a new continuation to the specified argument. According to the theory,
+ this continuation is linked to the closure of the thread that is going to be spawned and
  the closure will increase its join counter by a unit.
  \param arg Pointer to an argument of the thread is being spawned.
  \param hsn Handle to the thread is being spawned.
@@ -67,8 +46,8 @@ seta_cont_t seta_create_cont(void *, seta_handle_spawn_next_t);
 int seta_start(void *, int);
 
 /*! \fn void * seta_alloc_args(long size)
-	\brief Allocates the indicated amount of memory space in the heap which will be used 
-		by the user as a space where storing all the arguments to provide 
+	\brief Allocates the indicated amount of memory space in the heap which will be used
+		by the user as a space where storing all the arguments to provide
 		to the next new thread will be spawned.
 	\param size the amount expressed in byte.
 	\return Pointer to the allocated memory
@@ -94,7 +73,7 @@ seta_handle_spawn_next_t seta_prepare_spawn_next(void *, void *, seta_context_t 
 
 
 /*! \fn void seta_spawn_next(seta_handle_spawn_next_t hsn)
-	\brief It actually spawns the thread, which means that after that a new thread will be 
+	\brief It actually spawns the thread, which means that after that a new thread will be
 		ready to be executed if the thread is complete (all his arguments are set), otherwise
 		it stalls waiting for other threads to send the necessary arguments to it.
 	\param hsn The handle to the new thread is going to be spawned.
@@ -131,7 +110,7 @@ void seta_enable_info();
 void seta_enable_graph(char *);
 
 /*! \fn seta_arg_name_list_t seta_arg_name_list_new()
-	\brief Returns a list of argument name. After, it will be filled and set to the field 
+	\brief Returns a list of argument name. After, it will be filled and set to the field
 		arg_name_list of the context. Seta will use it to assign labels to the nodes in the
 		generated graph
 	\return Argument name list

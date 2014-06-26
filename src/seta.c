@@ -1,12 +1,13 @@
 //
-//  scheduler.c
+//  scta.c
 //  seta
 //
 //  Created by Fabio Pricoco on 19/10/13.
 //  Copyright (c) 2013 Erlang Solution Ltd. All rights reserved.
 //
 
-#include "seta_internal.h"
+#include "seta.h"
+#include "scheduler.h"
 
 int n_proc = 4;
 
@@ -34,7 +35,7 @@ seta_arg_name_list_t seta_arg_name_list_new() {
 	return (void *)msg_list_create();
 }
 
-void seta_arg_name_list_add(seta_arg_name_list_t ptr, const char *format, ...) {	
+void seta_arg_name_list_add(seta_arg_name_list_t ptr, const char *format, ...) {
 	msg_list_t *arg_name_list = (msg_list_t *)ptr;
 	va_list arglist;
 	va_start(arglist, format);
@@ -49,7 +50,7 @@ void scheduler_computate_processor_space(processor_t *local_proc) {
 	processor_computate_space(local_proc);
 	//printf("memory allocated on processor %d: %d\n", local_proc->id, local_proc->cur_space);
 	processor_unlock_stalled(local_proc);
-	processor_unlock_ready_queue(local_proc);	
+	processor_unlock_ready_queue(local_proc);
 }
 
 seta_cont_t seta_create_cont(void *arg, seta_handle_spawn_next_t hsn) {
@@ -60,8 +61,6 @@ seta_cont_t seta_create_cont(void *arg, seta_handle_spawn_next_t hsn) {
 	((closure_t *)hsn.closure)->join_counter += 1;
 	return cont;
 }
-
-
 
 void stack_depth_computation(processor_t *proc, closure_t *closure, seta_context_t *context) {
 	msg_list_t *allocated_ancient_list = (msg_list_t *)context->allocated_ancient_list;
@@ -79,7 +78,7 @@ void stack_depth_computation(processor_t *proc, closure_t *closure, seta_context
 			pthread_mutex_lock(&S1_list_mutex);
 			msg_list_destroy(S1_list);
 			S1_list = msg_list_copy(allocated_ancient_list);
-			pthread_mutex_unlock(&S1_list_mutex);			
+			pthread_mutex_unlock(&S1_list_mutex);
 		}
 	}
 	context->allocated_ancients += c1;
@@ -110,7 +109,6 @@ seta_handle_spawn_next_t seta_prepare_spawn_next(void *fun, void *args, seta_con
 	else {
 		context->spawn_next_done = true;
 	}
-
 
 	seta_handle_spawn_next_t hsn;
 	closure_t *closure = closure_create();
@@ -188,7 +186,7 @@ void seta_spawn(void *fun, void *args, seta_context_t *context) {
 	}
 	if (seta_graph) {
 		closure->arg_name_list = (msg_list_t *)context->arg_name_list;
-		context->arg_name_list = NULL;		
+		context->arg_name_list = NULL;
 		spawn_list_t *spawn_list = (spawn_list_t *)context->spawn_list;
 		msg_t label = msg_new();
 		closure_str(&label, closure);
@@ -196,7 +194,7 @@ void seta_spawn(void *fun, void *args, seta_context_t *context) {
 		spawn_list_append(spawn_list, closure->id, label);
 		msg_destroy(label);
 	}
-	
+
 	processor_lock_ready_queue(local_proc);
 	ready_queue_post_closure_to_level(local_proc->rq, closure, closure->level);
 	processor_unlock_ready_queue(local_proc);
@@ -208,10 +206,10 @@ void seta_spawn(void *fun, void *args, seta_context_t *context) {
 void seta_send_argument(seta_cont_t cont, void *src, int size, seta_context_t *context) {
 	closure_t *closure = (closure_t *)cont.closure;
 	processor_t *local_proc = processors[context->n_local_proc];
-	
+
 	void *dst = cont.arg;
 	memcpy(dst, src, size);
-	
+
     bool to_post = false;
 	closure_lock(closure);
 	closure->join_counter -= 1;
@@ -219,11 +217,11 @@ void seta_send_argument(seta_cont_t cont, void *src, int size, seta_context_t *c
 		to_post = true;
 	}
 	closure_unlock(closure);
-	
+
     if (seta_graph) {
         graph_send_argument(closure, context);
     }
-    
+
 	if (to_post) {
 		if (seta_info) {
 			processor_t *target_proc = processors[closure->proc];
@@ -310,7 +308,7 @@ void scheduler_execute_closure(processor_t *local_proc, closure_t *closure) {
 		msg_list_destroy((msg_list_t *)context.allocated_ancient_list);
 		spawn_list_t *spawn_list = (spawn_list_t *)context.spawn_list;
 		graph_spawns(context.closure_id, spawn_list);
-		spawn_list_destroy(spawn_list);		
+		spawn_list_destroy(spawn_list);
 	}
 }
 
@@ -332,13 +330,13 @@ void *scheduler_scheduling_loop(void *ptr) {
 			do {
 				n_rand_proc = rand() % n_proc;
 			} while (n_rand_proc == n_local_proc);
-            
+
             processor_t *remote_proc = processors[n_rand_proc];
-            
+
             processor_lock_ready_queue(remote_proc);
             closure_t *rcl = ready_queue_extract_tail_from_shallowest_level(remote_proc->rq);
             processor_unlock_ready_queue(remote_proc);
-            
+
             if (rcl != NULL) {
                 scheduler_execute_closure(local_proc, rcl);
             }
@@ -347,7 +345,7 @@ void *scheduler_scheduling_loop(void *ptr) {
 	return NULL;
 }
 
-void scheduler_print_results() { 
+void scheduler_print_results() {
 	int total_space = 0;
 	for (int i=0; i<n_proc; i++) {
 		printf("processor %d memory usage: %dB\n", i, processors[i]->total_space);
@@ -362,24 +360,24 @@ int seta_start(void *fun, int n) {
 	n_proc = n;
 	time_t t;
 	srand((unsigned)time(&t));
-	
+
 	if (seta_graph) {
 		graph_start(graph_filename);
 	}
-	
+
 	if (!(n_proc > 0)) {
 		printf("the number of processors must be greater than 0\n");
 		return -1;
 	}
 	processors = (processor_t **)malloc(sizeof(processor_t *) * n_proc);
-	
+
 	for (int i=0; i<n_proc; i++) {
 		processors[i] = processor_create(i);
 		if (seta_info) {
 			processor_create_info(processors[i]);
 		}
 	}
-	
+
 	closure_t *closure = closure_create();
 	if (seta_info) {
 		closure_create_info(closure);
@@ -390,35 +388,35 @@ int seta_start(void *fun, int n) {
 	}
 	closure_set_fun(closure, fun);
 	closure->is_first_thread = true;
-	
+
 	processor_lock_ready_queue(processors[0]);
 	ready_queue_post_closure_to_level(processors[0]->rq, closure, 0);
 	processor_unlock_ready_queue(processors[0]);
-	
+
 	if (seta_info) {
 		scheduler_computate_processor_space(processors[0]);
 	}
-	
+
 	for (int i=0; i<n_proc; i++) {
 		processor_start(processors[i]);
 	}
 	for (int i=0; i<n_proc; i++) {
 		processor_wait_4_me(processors[i]);
 	}
-	
+
 	if (seta_info) {
 		scheduler_print_results();
 	}
-	
+
 	for (int i=0; i<n_proc; i++) {
 		if (seta_info) {
 			processor_destroy_info(processors[i]);
-		}		
+		}
 		processor_destroy(processors[i]);
 	}
-	
+
 	free(processors);
-	
+
 	if (seta_graph && seta_info) {
 		msg_list_foreach(&graph_color_S1_element, S1_list);
 		msg_list_destroy(S1_list);
@@ -426,6 +424,6 @@ int seta_start(void *fun, int n) {
 	if (seta_graph) {
 		graph_finish();
 	}
-	
+
 	return 0;
 }

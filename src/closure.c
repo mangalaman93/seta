@@ -1,7 +1,13 @@
-#include "seta_internal.h"
-#include <stdlib.h>
-#include <pthread.h>
-#include <stdbool.h>
+//
+//  closure.c
+//  seta
+//
+//  Created by Fabio Pricoco on 19/10/13.
+//  Updated by Aman Mangal on 26/6/2013
+//  Copyright (c) 2013 Erlang Solution Ltd. All rights reserved.
+//
+
+#include "closure.h"
 
 int closure_id = 0;
 
@@ -75,7 +81,7 @@ void closure_space_cb(void *ptr, void *acc_in, int index) {
 
 void closure_str(msg_t *acc, closure_t *closure) {
 	msg_cat(acc, closure->name);
-	
+
 	if (closure->arg_name_list != NULL) {
 		msg_t args_str = msg_new_from_str("(");
 		msg_list_str(&args_str, closure->arg_name_list);

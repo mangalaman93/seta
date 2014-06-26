@@ -3,11 +3,12 @@
  *  seta
  *
  *  Created by Fabio Pricoco on 11/10/2013.
+ *  Updated by Aman Mangal on 26/6/2014
  *  Copyright 2013 Erlang Solutions Ltd. All rights reserved.
  *
  */
 
-#include "seta_internal.h"
+#include "msg.h"
 
 msg_t msg_new() {
 	char *empty_string = (char *)malloc(sizeof(char));

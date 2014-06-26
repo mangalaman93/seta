@@ -9,7 +9,6 @@
 
 #include "dequeue.h"
 
-
 dequeue_t * dequeue_create() {
 	dequeue_t * l = (dequeue_t *)malloc(sizeof(dequeue_t));
 	l->head = NULL;
@@ -20,10 +19,10 @@ dequeue_t * dequeue_create() {
 
 dequeue_t * dequeue_copy(void *fun, dequeue_t *d) {
 	dequeue_t *copy = dequeue_create();
-	
+
 	void * (*callback)(void *) = fun;
     element_t *ele = d->head;
-	
+
     while(ele != NULL) {
 		dequeue_add_tail(copy, callback(ele->val));
         ele = ele->next;
@@ -46,7 +45,7 @@ void dequeue_foreach(void *fun, dequeue_t *d)
 {
 	void (*callback)(void *, int) = fun;
     element_t *ele = d->head;
-	
+
 	int i = 0;
     while(ele != NULL) {
 		callback(ele->val, i++);
@@ -98,7 +97,7 @@ int dequeue_add_tail(dequeue_t *l, void *val) {
 void * dequeue_extract_head(dequeue_t *l) {
 	void *res;
 	element_t *aux;
-	
+
 	if (l->head == NULL) {
 		return NULL;
 	}
@@ -124,7 +123,7 @@ void * dequeue_extract_tail(dequeue_t *l) {
 	element_t *prev = l->head;
 	element_t *aux = l->head;
 	void *res;
-	
+
 	if (l->head == NULL) {
 		return NULL;
 	}
@@ -154,7 +153,7 @@ void * dequeue_extract_tail(dequeue_t *l) {
 int dequeue_remove_element_by_value(dequeue_t *l, void *e) {
 	element_t *prev = l->head;
 	element_t *aux = l->head;
-	
+
 	if (l->head == NULL) {
 		return -1;
 	}
@@ -173,7 +172,7 @@ int dequeue_remove_element_by_value(dequeue_t *l, void *e) {
 				l->size--;
 				return 0;
 			}
-			
+
 			aux = aux->next;
 			while (aux->val != e && aux->next != NULL) {
 				prev = aux;

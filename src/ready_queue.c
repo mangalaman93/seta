@@ -3,10 +3,11 @@
 //  seta
 //
 //  Created by Fabio Pricoco on 19/10/13.
+//  Updated by Aman Mangal on 26/6/2014
 //  Copyright (c) 2013 Erlang Solution Ltd. All rights reserved.
 //
 
-#include "seta_internal.h"
+#include "ready_queue.h"
 
 ready_queue_t * ready_queue_create() {
 	return dequeue_create();
@@ -58,7 +59,7 @@ void ready_queue_post_closure_to_level(ready_queue_t *rq, closure_t *cl, int lev
 	}
 	dequeue_t *closures = (dequeue_t *)dequeue_get_element(*rq, level);
 	dequeue_add_head(closures, cl);
-	
+
 }
 
 void level_space_cb(void *level, void *acc_in) {
