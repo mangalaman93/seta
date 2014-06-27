@@ -55,7 +55,7 @@ distclean: clean docclean
 	rm -rf $(LDIR)
 
 docclean:
-	rm -r doc/html
+	rm -rf doc/html
 
 clean:
 	rm -rf $(ODIR) *~

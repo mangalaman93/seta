@@ -1,8 +1,9 @@
 /*
- *  linked_list.h
+ *  singly linked_list.h
  *  stealing-work scheduler
  *
  *  Created by Fabio Pricoco on 09/09/2013.
+ *  Updated by Aman Mangal on 27/6/2014
  *  Copyright 2013 Erlang Solutions Ltd. All rights reserved.
  *
  */

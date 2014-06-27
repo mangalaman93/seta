@@ -3,6 +3,7 @@
  *  stealing-work scheduler
  *
  *  Created by Fabio Pricoco on 09/09/2013.
+ *  Updated by Aman Mangal on 27/6/2014
  *  Copyright 2013 Erlang Solutions Ltd. All rights reserved.
  *
  */
@@ -174,11 +175,13 @@ int dequeue_remove_element_by_value(dequeue_t *l, void *e) {
 			}
 
 			aux = aux->next;
-			while (aux->val != e && aux->next != NULL) {
+			while (aux !=NULL && aux->val != e) {
 				prev = aux;
 				aux = aux->next;
 			}
-			if (aux->val == e) {
+			if(aux == NULL)
+				return -1;
+			else if (aux->val == e) {
 				if (l->tail == aux) {
 					l->tail = prev;
 				}
@@ -191,13 +194,12 @@ int dequeue_remove_element_by_value(dequeue_t *l, void *e) {
 				return -1;
 			}
 		}
-
 	}
 	return -1;
 }
 
 void * dequeue_get_element(dequeue_t l, int n) {
-	if (l.head == NULL) {
+	if (n < 0 || n > l.size || l.head == NULL) {
 		return NULL;
 	}
 	else {
@@ -284,5 +286,3 @@ void * dequeue_iterator_get_next(dequeue_iterator_t *iterator) {
 	iterator->cur_element = current_element->next;
 	return current_element->val;
 }
-
-
