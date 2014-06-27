@@ -22,7 +22,7 @@ DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 _OBJ = logger.o dequeue.o msg.o lists.o closure.o graph_dot.o ready_queue.o processor.o seta.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-_TOBJ = dequeue_test.o
+_TOBJ = msg_test.o dequeue_test.o
 TOBJ = $(patsubst %,$(ODIR)/%,$(_TOBJ))
 
 $(ODIR)/%_test.o: $(TDIR)/%_test.c $(DEPS)
@@ -40,10 +40,10 @@ $(ODIR)/$(OUTPUT): $(OBJ)
 	$(CC) -I$(IDIR) -o $@ $^ $(MAINFILE) $(PROFILE) $(LIBS)
 
 test: test_setup dir $(TOBJ)
-	$(foreach test_file, $(wildcard $(ODIR)/*_test.o), ./$(test_file))
+	$(foreach test_file, $(wildcard $(ODIR)/*_test.o), ./$(test_file);)
 
 testvalgrind: test_setup dir $(TOBJ)
-	$(foreach test_file, $(wildcard $(ODIR)/*_test.o), $(VALGRIND) ./$(test_file))
+	$(foreach test_file, $(wildcard $(ODIR)/*_test.o), $(VALGRIND) ./$(test_file);)
 
 test_setup: all
 ifeq "$(wildcard $(LDIR) )" ""
