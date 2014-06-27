@@ -3,7 +3,6 @@
 //  seta
 //
 //  Created by Fabio Pricoco on 19/10/13.
-//  Updated by Aman Mangal 26/6/2014
 //  Copyright (c) 2013 Erlang Solution Ltd. All rights reserved.
 //
 
